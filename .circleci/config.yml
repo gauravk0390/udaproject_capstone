@@ -56,15 +56,15 @@ jobs:
               --tags project=infra-${CIRCLE_WORKFLOW_ID:0:7}\
               --stack-name "infra-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"             
-   build-docker:
-     working_directory: /app
-     docker:
-       - image: docker:17.09.0-ce-git
-     steps:
-       - checkout
-       - setup_remote_docker:
+  build-docker:
+    working_directory: /app
+    docker:
+      - image: docker:17.09.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker:
           version: 19.03.13
-       - deploy:
+      - deploy:
           name: Push Docker image
           command: |
             DOCKERPATH="gauravk0390/udaproject_capstone"
@@ -74,17 +74,17 @@ jobs:
             docker image push $DOCKERPATH
             docker image tag udaproject_capstone $DOCKERPATH:${CIRCLE_WORKFLOW_ID:0:7}
             docker image push $DOCKERPATH:${CIRCLE_WORKFLOW_ID:0:7}
-   deploy:
-     docker:
-       - image: amazon/aws-cli
-     steps:
-       - checkout
-       - run:
-           name: Install dependencies
-           command: |
+  deploy:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
             curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
             install -m 0755 kubectl /bin/kubectl
-       - run:
+      - run:
            name: Update Deployment
            command: |
              PROJECT=udaproject_capstone
