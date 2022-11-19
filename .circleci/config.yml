@@ -91,7 +91,7 @@ jobs:
              IMAGE="gaurav0390/udaproject_capstone"
              aws eks --region us-east-1 update-kubeconfig --name gaurav0390/udaproject_capstone
              aws sts get-caller-identity
-             kubectl apply -f k8s/deployment-service.yml
+             kubectl apply -f k8s/k8s-deploy.yml
              kubectl set image deployments/$PROJECT $PROJECT=$IMAGE:${CIRCLE_WORKFLOW_ID:0:7}
              kubectl get nodes
              kubectl get pods
@@ -102,7 +102,7 @@ workflows:
       - build
       # - deploy-infrastructure:
       #     requires: [build]
-      - build-docker
+  #    - build-docker
    #       requires: [deploy-infrastructure]
-      - deploy-k8s:
-          requires: [build-docker]
+      - deploy-k8s
+       #   requires: [build-docker]
