@@ -67,9 +67,9 @@ jobs:
       - deploy:
           name: Push Docker image
           command: |
-            DOCKERPATH="gauravk0390/udaproject_capstone"
+            DOCKERPATH="gaurav0390/udaproject_capstone"
             docker build --tag=udaproject_capstone .
-            docker login -u arnoldrx -p "$DOCKER_PASSWORD"
+            docker login -u gaurav0390 -p "$DOCKER_PASSWORD"
             docker image tag udaproject_capstone $DOCKERPATH:latest
             docker image push $DOCKERPATH
             docker image tag udaproject_capstone $DOCKERPATH:${CIRCLE_WORKFLOW_ID:0:7}
@@ -88,8 +88,8 @@ jobs:
            name: Update Deployment
            command: |
              PROJECT=udaproject_capstone
-             IMAGE="gauravk0390/udaproject_capstone"
-             aws eks --region us-east-1 update-kubeconfig --name gauravk0390/udaproject_capstone
+             IMAGE="gaurav0390/udaproject_capstone"
+             aws eks --region us-east-1 update-kubeconfig --name gaurav0390/udaproject_capstone
              aws sts get-caller-identity
              kubectl apply -f k8s/deployment-service.yml
              kubectl set image deployments/$PROJECT $PROJECT=$IMAGE:${CIRCLE_WORKFLOW_ID:0:7}
