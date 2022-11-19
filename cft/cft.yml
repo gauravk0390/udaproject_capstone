@@ -146,7 +146,7 @@ Resources:
   EKSCluster:
     Type: AWS::EKS::Cluster
     Properties:
-      Name: "Capstone-Cluster"
+      Name: "udaproject_capstone"
       RoleArn:
         "Fn::GetAtt": [ "EKSIAMRole", "Arn" ]
       ResourcesVpcConfig:
