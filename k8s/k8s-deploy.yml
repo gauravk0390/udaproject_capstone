@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udaproject_capstone
+  labels:
+    app: udaproject_capstone
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: udaproject_capstone
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: udaproject_capstone
+    spec:
+      containers:
+        - image: auravk0390/udaproject_capstone:latest
+          name: udaproject_capstone
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: nodejs-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: udaproject_capstone
+  labels:
+    name: udaproject_capstone
+spec:
+  selector:
+    app: udaproject_capstone
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 80
+      protocol: TCP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: udaproject_capstone
+  namespace: kube-system
+  labels:
+    app: udaproject_capstone
+  annotations:
+    alb.ingress.kubernetes.io/target-type: instance

@@ -1,0 +1,96 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+    # Use the same Docker base as the project
+      - image: python:3.7.3-stretch
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            make install
+            # Install hadolint
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
+                chmod +x /bin/hadolint
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+      # run lint!
+      - run:
+          name: run lint
+          command: |
+            . venv/bin/activate
+            make lint
+  docker:
+    - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: yum install -y tar gzip
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/cft/cft.yml \
+              --tags project=infra-${CIRCLE_WORKFLOW_ID:0:7}\
+              --stack-name "infra-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"             
+   build-docker:
+     working_directory: /app
+     docker:
+       - image: docker:17.09.0-ce-git
+     steps:
+       - checkout
+       - setup_remote_docker:
+          version: 19.03.13
+       - deploy:
+          name: Push Docker image
+          command: |
+            DOCKERPATH="gauravk0390/udaproject_capstone"
+            docker build --tag=udaproject_capstone .
+            docker login -u arnoldrx -p "$DOCKER_PASSWORD"
+            docker image tag udaproject_capstone $DOCKERPATH:latest
+            docker image push $DOCKERPATH
+            docker image tag udaproject_capstone $DOCKERPATH:${CIRCLE_WORKFLOW_ID:0:7}
+            docker image push $DOCKERPATH:${CIRCLE_WORKFLOW_ID:0:7}
+   deploy:
+     docker:
+       - image: amazon/aws-cli
+     steps:
+       - checkout
+       - run:
+           name: Install dependencies
+           command: |
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            install -m 0755 kubectl /bin/kubectl
+       - run:
+           name: Update Deployment
+           command: |
+             PROJECT=udaproject_capstone
+             IMAGE="gauravk0390/udaproject_capstone"
+             aws eks --region us-east-1 update-kubeconfig --name gauravk0390/udaproject_capstone
+             aws sts get-caller-identity
+             kubectl apply -f k8s/deployment-service.yml
+             kubectl set image deployments/$PROJECT $PROJECT=$IMAGE:${CIRCLE_WORKFLOW_ID:0:7}
+             kubectl get nodes
+             kubectl get pods
