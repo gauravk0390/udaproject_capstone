@@ -42,8 +42,9 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
-  docker:
-    - image: amazon/aws-cli
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
     steps:
       - checkout
       - run: yum install -y tar gzip
