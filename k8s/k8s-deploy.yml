@@ -20,7 +20,7 @@ spec:
         app: udaproject_capstone
     spec:
       containers:
-        - image: auravk0390/udaproject_capstone:latest
+        - image: gauravk0390/udaproject_capstone:latest
           name: udaproject_capstone
           imagePullPolicy: Always
           ports:

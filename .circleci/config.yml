@@ -74,7 +74,7 @@ jobs:
             docker image push $DOCKERPATH
             docker image tag udaproject_capstone $DOCKERPATH:${CIRCLE_WORKFLOW_ID:0:7}
             docker image push $DOCKERPATH:${CIRCLE_WORKFLOW_ID:0:7}
-  deploy:
+  deploy-k8s:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -100,6 +100,9 @@ workflows:
   default:
     jobs:
       - build
-      - deploy-infrastructure
+      # - deploy-infrastructure:
+      #     requires: [build]
       - build-docker
-      - deploy
+   #       requires: [deploy-infrastructure]
+      - deploy-k8s:
+          requires: [build-docker]
