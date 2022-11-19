@@ -54,8 +54,7 @@ jobs:
             aws cloudformation deploy \
               --template-file cft/cft.yml \
               --tags project=infra-${CIRCLE_WORKFLOW_ID:0:7}\
-              --stack-name "infra-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"             
+              --stack-name "infra-${CIRCLE_WORKFLOW_ID:0:7}"            
   build-docker:
     working_directory: /app
     docker:
