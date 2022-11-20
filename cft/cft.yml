@@ -146,7 +146,7 @@ Resources:
   EKSCluster:
     Type: AWS::EKS::Cluster
     Properties:
-      Name: "udaproject_capstone"
+      Name: "udaproject-capstone"
       RoleArn:
         "Fn::GetAtt": [ "EKSIAMRole", "Arn" ]
       ResourcesVpcConfig:
@@ -161,7 +161,7 @@ Resources:
     Type: 'AWS::EKS::Nodegroup'
     DependsOn: EKSCluster
     Properties:
-      ClusterName: "udaproject_capstone"
+      ClusterName: "udaproject-capstone"
       InstanceTypes:
         - 't2.micro'
       NodeRole: !GetAtt NodeInstanceRole.Arn
