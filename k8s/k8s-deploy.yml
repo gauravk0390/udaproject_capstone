@@ -39,7 +39,7 @@ spec:
   type: LoadBalancer
   ports:
     - name: http
-      port: 8000
+      port: 80
       targetPort: 80
       protocol: TCP
 
@@ -65,4 +65,4 @@ spec:
               service:
                 name: udaproject-capstone
                 port:
-                  number: 8000
+                  number: 80
