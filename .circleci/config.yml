@@ -104,5 +104,5 @@ workflows:
       #      requires: [build]
   #    - build-docker
    #       requires: [deploy-infrastructure]
-     - deploy-k8s
+      - deploy-k8s
        #  requires: [build-docker]
