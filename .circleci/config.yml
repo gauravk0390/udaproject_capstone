@@ -100,9 +100,9 @@ workflows:
   default:
     jobs:
       - build
-      - deploy-infrastructure:
-           requires: [build]
+      # - deploy-infrastructure:
+      #      requires: [build]
   #    - build-docker
    #       requires: [deploy-infrastructure]
-   #   - deploy-k8s
+      - deploy-k8s
        #  requires: [build-docker]
