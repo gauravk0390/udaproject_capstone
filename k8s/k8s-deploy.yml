@@ -53,3 +53,16 @@ metadata:
     app: udaproject-capstone
   annotations:
     alb.ingress.kubernetes.io/target-type: instance
+
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: udaproject-capstone
+                port:
+                  number: 8000
