@@ -102,7 +102,7 @@ workflows:
       - build
       - deploy-infrastructure:
           requires: [build]
-      - build-docker:
-          requires: [deploy-infrastructure]
-      - deploy-k8s:
-          requires: [build-docker]
+      # - build-docker:
+      #     requires: [deploy-infrastructure]
+      # - deploy-k8s:
+      #     requires: [build-docker]
